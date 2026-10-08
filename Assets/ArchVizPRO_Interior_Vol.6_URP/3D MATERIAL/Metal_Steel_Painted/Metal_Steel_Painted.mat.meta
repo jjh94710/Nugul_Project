@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 52dfd6008ea1ecc4f992f0c11426faae
+timeCreated: 1527803591
+licenseType: Store
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 274067
+  packageName: ArchVizPRO Interior Vol.6 URP
+  packageVersion: 1.1
+  assetPath: Assets/ArchVizPRO_Interior_Vol.6_URP/3D MATERIAL/Metal_Steel_Painted/Metal_Steel_Painted.mat
+  uploadId: 764021

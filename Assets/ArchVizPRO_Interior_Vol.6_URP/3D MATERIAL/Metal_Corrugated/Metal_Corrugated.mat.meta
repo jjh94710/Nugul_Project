@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: e4a08fc1476b5a942965c3b4252a4c4e
+timeCreated: 1527834258
+licenseType: Store
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 274067
+  packageName: ArchVizPRO Interior Vol.6 URP
+  packageVersion: 1.1
+  assetPath: Assets/ArchVizPRO_Interior_Vol.6_URP/3D MATERIAL/Metal_Corrugated/Metal_Corrugated.mat
+  uploadId: 764021

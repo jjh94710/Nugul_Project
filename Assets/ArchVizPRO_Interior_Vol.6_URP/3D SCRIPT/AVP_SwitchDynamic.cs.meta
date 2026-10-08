@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: bbfbd34a994791f41af9a6ddcb0a6175
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 274067
+  packageName: ArchVizPRO Interior Vol.6 URP
+  packageVersion: 1.1
+  assetPath: Assets/ArchVizPRO_Interior_Vol.6_URP/3D SCRIPT/AVP_SwitchDynamic.cs
+  uploadId: 764021

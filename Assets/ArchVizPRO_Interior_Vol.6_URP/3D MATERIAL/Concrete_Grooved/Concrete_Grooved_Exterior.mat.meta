@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 25030001b8c68bf4fb895b1103eb3c19
+timeCreated: 1527802258
+licenseType: Store
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 274067
+  packageName: ArchVizPRO Interior Vol.6 URP
+  packageVersion: 1.1
+  assetPath: Assets/ArchVizPRO_Interior_Vol.6_URP/3D MATERIAL/Concrete_Grooved/Concrete_Grooved_Exterior.mat
+  uploadId: 764021

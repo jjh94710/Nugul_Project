@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 48c3b417deb7b6c4e9c3d41db990de53
+ScriptedImporter:
+  fileIDToRecycleName:
+    4800000: MainAsset
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 625f186215c104763be7675aa2d941aa, type: 3}
+AssetOrigin:
+  serializedVersion: 1
+  productId: 274067
+  packageName: ArchVizPRO Interior Vol.6 URP
+  packageVersion: 1.1
+  assetPath: Assets/ArchVizPRO_Interior_Vol.6_URP/3D SHADER/Vegetation/AVP_Vegetation_Trees.ShaderGraph
+  uploadId: 764021

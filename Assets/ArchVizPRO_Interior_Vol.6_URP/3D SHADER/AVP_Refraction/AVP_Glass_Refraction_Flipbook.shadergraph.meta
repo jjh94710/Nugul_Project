@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: ba6fbb8e99d48fb468f75d66a8042e70
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 625f186215c104763be7675aa2d941aa, type: 3}
+AssetOrigin:
+  serializedVersion: 1
+  productId: 274067
+  packageName: ArchVizPRO Interior Vol.6 URP
+  packageVersion: 1.1
+  assetPath: Assets/ArchVizPRO_Interior_Vol.6_URP/3D SHADER/AVP_Refraction/AVP_Glass_Refraction_Flipbook.shadergraph
+  uploadId: 764021

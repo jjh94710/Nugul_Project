@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 909d917d73a63f940ac158d02e936645
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 274067
+  packageName: ArchVizPRO Interior Vol.6 URP
+  packageVersion: 1.1
+  assetPath: Assets/ArchVizPRO_Interior_Vol.6_URP/3D SCRIPT/StarterAssets/FirstPersonController/Scripts/BasicRigidBodyPush.cs
+  uploadId: 764021

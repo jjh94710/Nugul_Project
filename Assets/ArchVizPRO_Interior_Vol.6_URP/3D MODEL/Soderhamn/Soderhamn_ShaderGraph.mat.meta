@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 8302404e3eacc7244bd155ce56c6d53c
+timeCreated: 1523227976
+licenseType: Store
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 274067
+  packageName: ArchVizPRO Interior Vol.6 URP
+  packageVersion: 1.1
+  assetPath: Assets/ArchVizPRO_Interior_Vol.6_URP/3D MODEL/Soderhamn/Soderhamn_ShaderGraph.mat
+  uploadId: 764021

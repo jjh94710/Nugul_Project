@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ed6baa496dccbc45a9f55bb48289552, type: 3}
+  m_Name: LivingRoomData
+  m_EditorClassIdentifier: Assembly-CSharp::ZoneData
+  zoneName: "\uAC70\uC2E4"
+  area: 10
+  description: "\uB0A8\uD5A5 \uD1B5\uCC3D\uC73C\uB85C \uD558\uB8E8 \uC885\uC77C \uC790\uC5F0\uAD11\uC774 \uB4E4\uC5B4\uC624\uB294 \uAC1C\uBC29\uD615 \uAC70\uC2E4\uC785\uB2C8\uB2E4"

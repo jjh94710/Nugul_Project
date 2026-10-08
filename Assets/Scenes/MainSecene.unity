@@ -108825,7 +108825,7 @@ Transform:
   m_GameObject: {fileID: 4006871722240852947}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.15, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -123721,6 +123721,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5433592759874468848}
   - component: {fileID: 6768768394978536790}
+  - component: {fileID: 6768768394978536791}
   m_Layer: 8
   m_Name: PlayerCapsule
   m_TagString: Player
@@ -130027,6 +130028,24 @@ CharacterController:
   m_SkinWidth: 0.02
   m_MinMoveDistance: 0
   m_Center: {x: 0, y: 0.93, z: 0}
+--- !u!114 &6768768394978536791
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6119241969677735978}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff5b51b8e436a364eb0275a0383711c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraMovement
+  moveSpeed: 3
+  runSpeed: 6
+  gravity: -9.81
+  cameraTransform: {fileID: 7899651876965331992}
+  spinSpeed: 0.1
+  maxAngle: 80
 --- !u!4 &6769338056997002279
 Transform:
   m_ObjectHideFlags: 0
@@ -131732,6 +131751,7 @@ GameObject:
   - component: {fileID: 4353030710607053788}
   - component: {fileID: 5566711933681926254}
   - component: {fileID: 8331391052257859278}
+  - component: {fileID: 8331391052257859280}
   m_Layer: 0
   m_Name: MainCamera
   m_TagString: MainCamera
@@ -153062,6 +153082,31 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 1
   m_Version: 2
+--- !u!143 &8331391052257859280
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7331681774053104061}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Height: 2
+  m_Radius: 0.5
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &8332447255687035199
 GameObject:
   m_ObjectHideFlags: 0
@@ -155606,7 +155651,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9013111636712874856}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7256e3f72c27bbd46b35a5d890369a2e, type: 3}
   m_Name: 
@@ -155722,6 +155767,7 @@ GameObject:
   - component: {fileID: 9013111636712874858}
   - component: {fileID: 9013111636712874857}
   - component: {fileID: 8940822647054827968}
+  - component: {fileID: 9013111636712874861}
   m_Layer: 0
   m_Name: PlayerFollowCamera
   m_TagString: Untagged
@@ -155815,6 +155861,31 @@ MonoBehaviour:
       BarrelClipping: 0.25
       Anamorphism: 0
   BlendHint: 0
+--- !u!143 &9013111636712874861
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9013111636712874856}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Height: 2
+  m_Radius: 0.5
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &9015508524060146025
 GameObject:
   m_ObjectHideFlags: 0

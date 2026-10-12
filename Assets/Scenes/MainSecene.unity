@@ -115140,6 +115140,8 @@ GameObject:
   - component: {fileID: 9069647340515850039}
   - component: {fileID: 8915226482690480696}
   - component: {fileID: 7231477915989220757}
+  - component: {fileID: 9069647340515850041}
+  - component: {fileID: 9069647340515850040}
   m_Layer: 0
   m_Name: Floor_Bedroom
   m_TagString: Untagged
@@ -156056,6 +156058,41 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1074949507}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &9069647340515850040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3069200785125008881}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d374025e09a34b84eaf54bc2b0240f64, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ZoneTrigger
+  zoneData: {fileID: 11400000, guid: b7e134e2347542c468366ef028aaccd9, type: 2}
+  zoneInfoPanel: {fileID: 0}
+--- !u!65 &9069647340515850041
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3069200785125008881}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 3.967626, y: 5.642438, z: 0}
+  m_Center: {x: -0.00000029802322, y: 0, z: -0.0000006103517}
 --- !u!4 &9074140845512536658
 Transform:
   m_ObjectHideFlags: 0

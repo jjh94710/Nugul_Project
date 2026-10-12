@@ -66,18 +66,81 @@ public static class InteractionSetup
 
         foreach (GameObject target in selection)
         {
-            if (target.GetComponentInChildren<Light>(true) == null)
-            {
-                Debug.LogWarning(
-                    target.name + ": 자식에 Light가 없습니다. 컴포넌트를 붙인 뒤 Lights 칸을 직접 채워 주세요.",
-                    target);
-            }
-
             EnsureCollider(target);
 
-            if (target.GetComponent<LightSwitchInteractable>() == null)
+            LightSwitchInteractable control = target.GetComponent<LightSwitchInteractable>();
+            if (control == null)
             {
-                Undo.AddComponent<LightSwitchInteractable>(target);
+                control = Undo.AddComponent<LightSwitchInteractable>(target);
+            }
+
+            AssignLights(control);
+            made++;
+        }
+
+        if (made == 0)
+        {
+            return;
+        }
+
+        EditorSceneManager.MarkAllScenesDirty();
+        Debug.Log($"조명 스위치 {made}개를 설정했습니다.");
+    }
+
+    [MenuItem("Tools/상호작용 설정/선택한 램프에 실시간 조명 추가")]
+    private static void AddRealtimeLight()
+    {
+        GameObject[] selection = Selection.gameObjects;
+        if (selection.Length == 0)
+        {
+            Debug.LogError("하이어라키에서 램프를 먼저 선택하세요.");
+            return;
+        }
+
+        int made = 0;
+
+        foreach (GameObject target in selection)
+        {
+            Light existing = target.GetComponentInChildren<Light>(true);
+
+            if (existing != null)
+            {
+                // 방향광은 태양이라 위치를 무시하고 씬 전체를 비춘다. 램프로는 못 쓴다.
+                if (existing.type == LightType.Directional)
+                {
+                    Undo.RecordObject(existing, "램프 조명 수정");
+                    ApplyLampPreset(existing);
+
+                    Debug.LogWarning(
+                        target.name + ": 붙어 있던 Directional Light를 Point로 바꾸고 추천값을 넣었습니다. " +
+                        "방향광은 램프 위치와 무관하게 씬 전체를 비춥니다.",
+                        existing);
+
+                    made++;
+                    continue;
+                }
+
+                Debug.Log(
+                    $"{target.name}: 이미 {existing.name}({existing.type})가 있어 건너뜁니다. " +
+                    "값을 손보려면 [램프 조명 추천값 적용]을 쓰세요.",
+                    existing);
+                continue;
+            }
+
+            GameObject holder = new GameObject("Point Light");
+            Undo.RegisterCreatedObjectUndo(holder, "실시간 조명 추가");
+            holder.transform.SetParent(target.transform, false);
+
+            Renderer lampRenderer = target.GetComponentInChildren<Renderer>();
+            holder.transform.position = lampRenderer != null ? lampRenderer.bounds.center : target.transform.position;
+
+            Light added = holder.AddComponent<Light>();
+            ApplyLampPreset(added);
+
+            LightSwitchInteractable control = target.GetComponent<LightSwitchInteractable>();
+            if (control != null)
+            {
+                AssignLights(control);
             }
 
             made++;
@@ -89,7 +152,66 @@ public static class InteractionSetup
         }
 
         EditorSceneManager.MarkAllScenesDirty();
-        Debug.Log($"조명 스위치 {made}개를 설정했습니다.");
+        Debug.LogWarning(
+            $"램프 조명 {made}개를 손봤습니다. 이 씬은 라이트맵이 구워져 있어서, 꺼도 방이 어두워지지 않고 " +
+            "램프 주변만 밝기가 변합니다. 진짜 소등 연출이 필요하면 AreaLight를 Mixed로 바꾸고 다시 베이크해야 합니다.");
+    }
+
+    [MenuItem("Tools/상호작용 설정/램프 조명 추천값 적용")]
+    private static void ApplyLampPresetToSelection()
+    {
+        GameObject[] selection = Selection.gameObjects;
+        if (selection.Length == 0)
+        {
+            Debug.LogError("하이어라키에서 램프나 조명을 먼저 선택하세요.");
+            return;
+        }
+
+        int count = 0;
+
+        foreach (GameObject target in selection)
+        {
+            foreach (Light lamp in target.GetComponentsInChildren<Light>(true))
+            {
+                if (lamp.lightmapBakeType == LightmapBakeType.Baked)
+                {
+                    Debug.Log(lamp.name + ": Baked 조명이라 건드리지 않습니다.", lamp);
+                    continue;
+                }
+
+                Undo.RecordObject(lamp, "램프 조명 추천값");
+                ApplyLampPreset(lamp);
+                count++;
+            }
+        }
+
+        if (count == 0)
+        {
+            Debug.LogWarning("손볼 조명을 찾지 못했습니다.");
+            return;
+        }
+
+        EditorSceneManager.MarkAllScenesDirty();
+        Debug.Log($"조명 {count}개에 추천값을 넣었습니다. 2700K / 범위 3m / 밝기 1.5 / Soft 그림자.");
+    }
+
+    // 백열 램프 느낌의 기본값. 방 크기에 따라 Range와 Intensity는 손으로 조절한다.
+    private static void ApplyLampPreset(Light lamp)
+    {
+        lamp.type = LightType.Point;
+        lamp.lightmapBakeType = LightmapBakeType.Realtime;
+
+        lamp.useColorTemperature = true;
+        lamp.colorTemperature = 2700f;
+        lamp.color = Color.white;
+
+        lamp.range = 3f;
+        lamp.intensity = 1.5f;
+        lamp.bounceIntensity = 0f;
+
+        lamp.shadows = LightShadows.Soft;
+        lamp.shadowStrength = 0.7f;
+        lamp.renderMode = LightRenderMode.ForcePixel;
     }
 
     [MenuItem("Tools/상호작용 설정/플레이어에 상호작용 붙이기")]
@@ -116,12 +238,16 @@ public static class InteractionSetup
         }
 
         SerializedObject serialized = new SerializedObject(interactor);
+        InteractionPrompt promptUI = Object.FindAnyObjectByType<InteractionPrompt>(FindObjectsInactive.Include);
+
         serialized.FindProperty("viewCamera").objectReferenceValue = view;
+        serialized.FindProperty("prompt").objectReferenceValue = promptUI;
         serialized.ApplyModifiedProperties();
 
         EditorSceneManager.MarkAllScenesDirty();
         Debug.Log(
-            player.name + "에 PlayerInteractor를 붙였습니다. 카메라: " + (view != null ? view.name : "못 찾음(직접 넣어 주세요)"),
+            player.name + "에 PlayerInteractor를 붙였습니다. 카메라: " + (view != null ? view.name : "못 찾음(직접 넣어 주세요)") +
+            " / 안내 문구: " + (promptUI != null ? promptUI.name : "없음(안내 문구 UI 만들기를 실행하세요)"),
             player);
     }
 
@@ -267,7 +393,27 @@ public static class InteractionSetup
             return;
         }
 
-        Undo.AddComponent<BoxCollider>(target);
+        // 자기 메시가 없는 경우(램프 루트 등). 자식들을 다 덮는 박스를 만든다.
+        BoxCollider box = Undo.AddComponent<BoxCollider>(target);
+        Renderer[] renderers = target.GetComponentsInChildren<Renderer>();
+
+        if (renderers.Length == 0)
+        {
+            return;
+        }
+
+        Bounds bounds = renderers[0].bounds;
+        for (int i = 1; i < renderers.Length; i++)
+        {
+            bounds.Encapsulate(renderers[i].bounds);
+        }
+
+        Vector3 scale = target.transform.lossyScale;
+        box.center = target.transform.InverseTransformPoint(bounds.center);
+        box.size = new Vector3(
+            bounds.size.x / Mathf.Max(0.0001f, Mathf.Abs(scale.x)),
+            bounds.size.y / Mathf.Max(0.0001f, Mathf.Abs(scale.y)),
+            bounds.size.z / Mathf.Max(0.0001f, Mathf.Abs(scale.z)));
     }
 
     // 피벗이 이미 문 가장자리면 그대로 쓰고, 한가운데면 가장자리를 경첩으로 추천한다.
@@ -403,5 +549,41 @@ public static class InteractionSetup
         Debug.Log(
             target.name + ": Batching Static을 껐습니다. 켜진 채로는 문이 움직여도 화면이 바뀌지 않습니다.",
             target);
+    }
+
+    // 베이크된 조명은 라이트맵에 구워져 있어 꺼도 화면이 그대로다. 실시간/믹스드만 연결한다.
+    private static void AssignLights(LightSwitchInteractable control)
+    {
+        List<Light> usable = new List<Light>();
+
+        foreach (Light candidate in control.GetComponentsInChildren<Light>(true))
+        {
+            if (candidate.lightmapBakeType != LightmapBakeType.Baked)
+            {
+                usable.Add(candidate);
+            }
+        }
+
+        SerializedObject serialized = new SerializedObject(control);
+        SerializedProperty array = serialized.FindProperty("lights");
+        array.arraySize = usable.Count;
+
+        for (int i = 0; i < usable.Count; i++)
+        {
+            array.GetArrayElementAtIndex(i).objectReferenceValue = usable[i];
+        }
+
+        serialized.ApplyModifiedProperties();
+
+        if (usable.Count == 0)
+        {
+            Debug.LogWarning(
+                control.name + ": 켤 수 있는 조명이 없습니다. 이 램프는 조명 없는 장식 메시입니다. " +
+                "[Tools > 상호작용 설정 > 선택한 램프에 실시간 조명 추가]를 쓰거나, Lights 칸을 직접 채우세요.",
+                control);
+            return;
+        }
+
+        Debug.Log($"{control.name}: 조명 {usable.Count}개를 연결했습니다.", control);
     }
 }

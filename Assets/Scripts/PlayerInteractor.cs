@@ -12,6 +12,10 @@ public class PlayerInteractor : MonoBehaviour
 
     [SerializeField] private float maxDistance = 3f;
 
+    [Tooltip("조준 판정의 굵기(m). 전구처럼 작은 물체를 겨냥하기 쉬워진다. 0이면 가느다란 레이만 쓴다.")]
+    [Range(0f, 0.5f)]
+    [SerializeField] private float aimRadius = 0.12f;
+
     [Tooltip("상호작용 대상이 있는 레이어만 켜 두면 벽 뒤를 덜 훑는다.")]
     [SerializeField] private LayerMask layers = ~0;
 
@@ -25,7 +29,17 @@ public class PlayerInteractor : MonoBehaviour
     {
         if (viewCamera == null)
         {
+            // 인스펙터에 꽂아 두는 게 원칙이다. 자동 탐색은 프리팹으로 재사용할 때를 위한 안전망이고,
+            // 어느 카메라가 잡혔는지 모른 채 넘어가지 않도록 반드시 알린다.
             viewCamera = ResolveCamera();
+
+            if (viewCamera != null)
+            {
+                Debug.LogWarning(
+                    name + ": View Camera 칸이 비어 " + viewCamera.name + "을(를) 자동으로 골랐습니다. " +
+                    "인스펙터에 직접 넣어 주세요.",
+                    this);
+            }
         }
 
         if (viewCamera == null)
@@ -112,10 +126,21 @@ public class PlayerInteractor : MonoBehaviour
     {
         Ray ray = viewCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
 
-        // 구역 볼륨 같은 트리거는 무시한다. 플레이어를 감싸고 있어서 레이를 바로 막는다.
-        bool hitSomething = Physics.Raycast(ray, out RaycastHit hit, maxDistance, layers, QueryTriggerInteraction.Ignore);
+        // 먼저 정확한 레이. 제대로 겨냥했으면 여기서 잡힌다.
+        Interactable found = Cast(ray, 0f, out RaycastHit hit, out bool hitSomething);
 
-        Interactable found = hitSomething ? hit.collider.GetComponentInParent<Interactable>() : null;
+        // 못 잡았으면 굵은 레이로 한 번 더 본다. 전구처럼 작은 물체를 겨냥하기 쉬워진다.
+        if (found == null && aimRadius > 0.001f)
+        {
+            Interactable wide = Cast(ray, aimRadius, out RaycastHit wideHit, out bool wideHitSomething);
+
+            if (wide != null)
+            {
+                found = wide;
+                hit = wideHit;
+                hitSomething = wideHitSomething;
+            }
+        }
 
         if (debugRay)
         {
@@ -132,6 +157,26 @@ public class PlayerInteractor : MonoBehaviour
         }
 
         return found;
+    }
+
+    // 구역 볼륨 같은 트리거는 무시한다. 플레이어를 감싸고 있어서 레이를 바로 막는다.
+    private Interactable Cast(Ray ray, float radius, out RaycastHit hit, out bool hitSomething)
+    {
+        if (radius <= 0.001f)
+        {
+            hitSomething = Physics.Raycast(ray, out hit, maxDistance, layers, QueryTriggerInteraction.Ignore);
+        }
+        else
+        {
+            // 플레이어 콜라이더 안에서 구가 시작되면 거리 0으로 걸린다. 조금 앞에서 쏜다.
+            float offset = radius * 2f;
+            Vector3 origin = ray.origin + ray.direction * offset;
+
+            hitSomething = Physics.SphereCast(
+                origin, radius, ray.direction, out hit, maxDistance - offset, layers, QueryTriggerInteraction.Ignore);
+        }
+
+        return hitSomething ? hit.collider.GetComponentInParent<Interactable>() : null;
     }
 
     private void Clear()

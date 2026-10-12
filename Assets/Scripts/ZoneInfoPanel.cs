@@ -86,9 +86,9 @@ public class ZoneInfoPanel : MonoBehaviour
             return;
         }
 
-        SetText(zoneNameText, data.zoneName);
-        SetText(areaText, $"전용면적 {data.area}m²");
-        SetText(descriptionText, data.description);
+        SetText(zoneNameText, data.ZoneName);
+        SetText(areaText, $"전용면적 {data.Area}m²");
+        SetText(descriptionText, data.Description);
 
         gameObject.SetActive(true);
     }

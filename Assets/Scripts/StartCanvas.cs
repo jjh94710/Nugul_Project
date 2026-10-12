@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public class StartCanvas : MonoBehaviour
 {
-    public Button startButton;
+    [SerializeField] private Button startButton;
 
     [Tooltip("체험 시작을 누르면 켜질 플레이어 컨트롤러. 비워 두면 씬에서 찾는다.")]
     [SerializeField] private CameraMovement playerController;

@@ -3,9 +3,15 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "ZoneData", menuName = "ModelHouse/ZoneData")]
 public class ZoneData : ScriptableObject
 {
-    public string zoneName;
-    public float area;
+    [SerializeField] private string zoneName;
+    [SerializeField] private float area;
 
     [TextArea]
-    public string description;
+    [SerializeField] private string description;
+
+    public string ZoneName => zoneName;
+
+    public float Area => area;
+
+    public string Description => description;
 }

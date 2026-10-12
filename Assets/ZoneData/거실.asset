@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7ed6baa496dccbc45a9f55bb48289552, type: 3}
-  m_Name: LivingRoomData
+  m_Name: "\uAC70\uC2E4"
   m_EditorClassIdentifier: Assembly-CSharp::ZoneData
   zoneName: "\uAC70\uC2E4"
   area: 10

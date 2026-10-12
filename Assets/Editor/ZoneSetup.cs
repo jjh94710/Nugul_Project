@@ -14,7 +14,7 @@ public static class ZoneSetup
 
     private const string ZonesRootName = "Zones";
     private const string ZoneDataFolder = "Assets/ZoneData";
-    private const string PrefabFolder = "Assets/Perfabs";
+    private const string PrefabFolder = "Assets/Prefabs";
 
     // 바닥 오브젝트 이름 → 구역 이름 추측값. 틀리면 만들어진 ZoneData에서 고치면 된다.
     private static readonly string[][] NameTable =
@@ -170,7 +170,7 @@ public static class ZoneSetup
                 problems.Add("Is Trigger 콜라이더 없음");
             }
 
-            string label = data != null ? trigger.name + " (" + data.zoneName + ")" : trigger.name;
+            string label = data != null ? trigger.name + " (" + data.ZoneName + ")" : trigger.name;
 
             if (problems.Count == 0)
             {
@@ -243,10 +243,10 @@ public static class ZoneSetup
         }
 
         string guess = GuessZoneName(floor.name);
-        if (guess != null && data.zoneName != guess)
+        if (guess != null && data.ZoneName != guess)
         {
             Debug.LogWarning(
-                $"{volumeName}: 이미 연결돼 있던 ZoneData가 '{data.zoneName}'입니다. " +
+                $"{volumeName}: 이미 연결돼 있던 ZoneData가 '{data.ZoneName}'입니다. " +
                 $"바닥 이름으로는 '{guess}'인데 맞는지 확인하세요.",
                 data);
         }
@@ -258,7 +258,7 @@ public static class ZoneSetup
 
         RemoveOldTrigger(floor);
 
-        Debug.Log($"{volumeName}: {data.zoneName} / 가로 {box.size.x:0.0}m x 세로 {box.size.z:0.0}m", volume);
+        Debug.Log($"{volumeName}: {data.ZoneName} / 가로 {box.size.x:0.0}m x 세로 {box.size.z:0.0}m", volume);
     }
 
     // 바닥 메시에 직접 붙여 둔 옛 트리거를 정리한다.
@@ -302,7 +302,7 @@ public static class ZoneSetup
         foreach (string guid in AssetDatabase.FindAssets("t:ZoneData"))
         {
             ZoneData found = AssetDatabase.LoadAssetAtPath<ZoneData>(AssetDatabase.GUIDToAssetPath(guid));
-            if (found != null && found.zoneName == zoneName)
+            if (found != null && found.ZoneName == zoneName)
             {
                 return found;
             }
@@ -314,14 +314,17 @@ public static class ZoneSetup
         }
 
         ZoneData data = ScriptableObject.CreateInstance<ZoneData>();
-        data.zoneName = zoneName;
-        data.area = Mathf.Round(bounds.size.x * bounds.size.z * 10f) / 10f;
-        data.description = string.Empty;
-
         string path = AssetDatabase.GenerateUniqueAssetPath(ZoneDataFolder + "/" + zoneName + ".asset");
         AssetDatabase.CreateAsset(data, path);
 
-        Debug.Log($"ZoneData 생성: {path} (전용면적 {data.area}m² 자동 계산). 설명은 직접 채워 주세요.", data);
+        // 필드가 private이라 ZoneTrigger를 채울 때와 같은 방식으로 넣는다.
+        SerializedObject serialized = new SerializedObject(data);
+        serialized.FindProperty("zoneName").stringValue = zoneName;
+        serialized.FindProperty("area").floatValue = Mathf.Round(bounds.size.x * bounds.size.z * 10f) / 10f;
+        serialized.FindProperty("description").stringValue = string.Empty;
+        serialized.ApplyModifiedProperties();
+
+        Debug.Log($"ZoneData 생성: {path} (전용면적 {data.Area}m² 자동 계산). 설명은 직접 채워 주세요.", data);
         return data;
     }
 

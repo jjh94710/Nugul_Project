@@ -72,6 +72,8 @@ public class ZoneTrigger : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
+        //
+
         if (!other.CompareTag(playerTag))
         {
             return;

@@ -71,7 +71,7 @@ public class CameraMovement : MonoBehaviour
 
     private void OnEnable()
     {
-        SetCursorLock(true);
+        SetCursorLock(false);
     }
 
     private void OnDisable()
@@ -81,7 +81,10 @@ public class CameraMovement : MonoBehaviour
 
     private void OnApplicationFocus(bool hasFocus)
     {
-        SetCursorLock(hasFocus);
+        if (!hasFocus)
+        {
+            SetCursorLock(false);
+        }
     }
 
     private void SetCursorLock(bool locked)
@@ -100,6 +103,24 @@ public class CameraMovement : MonoBehaviour
     {
         Mouse mouse = Mouse.current;
         if (mouse == null)
+        {
+            return;
+        }
+
+        // 우클릭 시작 → 커서 잠금
+        if (mouse.rightButton.wasPressedThisFrame)
+        {
+            SetCursorLock(true);
+        }
+
+        // 우클릭 종료 → 커서 다시 표시
+        if (mouse.rightButton.wasReleasedThisFrame)
+        {
+            SetCursorLock(false);
+        }
+
+        // 우클릭 중이 아니면 시점 회전 안 함
+        if (!mouse.rightButton.isPressed)
         {
             return;
         }

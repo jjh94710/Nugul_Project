@@ -1,5 +1,65 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &61142891939597255
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8934943543682220426}
+  - component: {fileID: 36153774903465422}
+  m_Layer: 0
+  m_Name: CurtainSwapper
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8934943543682220426
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 61142891939597255}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 15.14242, y: -2.34659, z: 7.50637}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6791696712605661796}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &36153774903465422
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 61142891939597255}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d264f1b2157a30445b0810e6340ad08e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MaterialSwapper
+  groupName: 
+  optionLabels:
+  - "\uC544\uC774\uBCF4\uB9AC"
+  - "\uBCA0\uC774\uC9C0"
+  - "\uCC28\uCF5C"
+  defaultIndex: 0
+  targets:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  materials:
+  - {fileID: 2100000, guid: e1a08fd4f92cd90408227eb28a089e0f, type: 2}
+  - {fileID: 2100000, guid: ade3ba3d69a7dec47af77579f4e532dd, type: 2}
+  - {fileID: 2100000, guid: 32232a5bad5f86944810983c6804b5a2, type: 2}
 --- !u!1 &432224926097163283
 GameObject:
   m_ObjectHideFlags: 0
@@ -44,6 +104,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d264f1b2157a30445b0810e6340ad08e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MaterialSwapper
+  groupName: 
+  optionLabels:
+  - "\uD654\uC774\uD2B8"
+  - "\uBCA0\uC774\uC9C0"
+  - "\uCC28\uCF5C"
+  defaultIndex: 0
   targets:
   - {fileID: 0}
   - {fileID: 0}
@@ -110,6 +176,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d264f1b2157a30445b0810e6340ad08e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MaterialSwapper
+  groupName: 
+  optionLabels:
+  - "\uC6D0\uBAA9"
+  - "\uB300\uB9AC\uC11D"
+  - "\uD0C0\uC77C"
+  defaultIndex: 0
   targets:
   - {fileID: 0}
   - {fileID: 0}
@@ -161,5 +233,6 @@ Transform:
   m_Children:
   - {fileID: 5698303343532833903}
   - {fileID: 1197733241014092704}
+  - {fileID: 8934943543682220426}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

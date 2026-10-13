@@ -177,6 +177,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d28b571b1ba02324d893973dadc68b7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FurnitureSlot
+  groupName: 
+  optionLabels: []
+  defaultIndex: 0
   variants:
   - {fileID: 843351207661219410}
   - {fileID: 5539049162158123921}
@@ -293,6 +296,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d28b571b1ba02324d893973dadc68b7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FurnitureSlot
+  groupName: 
+  optionLabels: []
+  defaultIndex: 0
   variants:
   - {fileID: 2493763433937105076}
   - {fileID: 887790707429688027}

@@ -114,6 +114,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d28b571b1ba02324d893973dadc68b7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FurnitureSlot
+  groupName: 
+  optionLabels:
+  - "\uAE30\uBCF8"
+  - "\uD14C\uC774\uBE14A"
+  defaultIndex: 0
   variants:
   - {fileID: 4764319948274810669}
   - {fileID: 6359512684205028634}
@@ -232,6 +237,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d28b571b1ba02324d893973dadc68b7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FurnitureSlot
+  groupName: 
+  optionLabels:
+  - "\uAE30\uBCF8"
+  - "\uC758\uC790A"
+  - "\uC758\uC790B"
+  defaultIndex: 0
   variants:
   - {fileID: 7006255421068949985}
   - {fileID: 4115349767727488746}
@@ -353,6 +364,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d28b571b1ba02324d893973dadc68b7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FurnitureSlot
+  groupName: 
+  optionLabels:
+  - "\uAE30\uBCF8"
+  - "\uC18C\uD30CA"
+  - "\uC18C\uD30CB"
+  defaultIndex: 0
   variants:
   - {fileID: 558477709990857312}
   - {fileID: 2517280479625997072}

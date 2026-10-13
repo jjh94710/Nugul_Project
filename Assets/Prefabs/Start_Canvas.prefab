@@ -1003,3 +1003,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StartCanvas
   startButton: {fileID: 51302343946491916}
+  playerController: {fileID: 0}
+  showOnStart:
+  - {fileID: 0}

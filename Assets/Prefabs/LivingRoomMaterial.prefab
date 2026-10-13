@@ -60,6 +60,8 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   materials:
   - {fileID: 2100000, guid: 3a27ae251eb8c0e40b7b7403cce1f1d6, type: 2}
   - {fileID: 2100000, guid: 6ff4da855d14c1e46b4ab6f0b53758d8, type: 2}

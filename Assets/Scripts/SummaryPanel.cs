@@ -5,20 +5,18 @@ using UnityEngine;
 using UnityEngine.UI;
 
 // 선택 옵션 요약 패널.
-// 지금 고른 옵션을 표에 채우고, 조합을 저장해 뒀다가 누르면 통째로 되돌린다.
+// 표의 모든 줄을 같은 틀에서 찍어 낸다. 맨 윗줄이 지금 고른 옵션이고,
+// 저장을 누를 때마다 그 아래로 조합이 한 줄씩 쌓인다. 쌓인 줄을 누르면 통째로 되돌아간다.
 public class SummaryPanel : MonoBehaviour
 {
-    // 표의 칸 하나. 칸 하나에 그룹 여러 개를 묶으면 쉼표로 이어 붙인다.
+    // 표의 열 하나. 열 하나에 그룹 여러 개를 묶으면 쉼표로 이어 붙인다.
     [System.Serializable]
     private class Cell
     {
-        [Tooltip("글자를 쓸 텍스트")]
-        public TMP_Text text;
-
-        [Tooltip("이 칸이 보여 줄 옵션 그룹들")]
+        [Tooltip("이 열이 보여 줄 옵션 그룹들")]
         public OptionGroup[] groups;
 
-        [Tooltip("그룹이 하나도 없는 칸에 쓸 글자")]
+        [Tooltip("그룹이 하나도 없는 열에 쓸 글자")]
         public string emptyLabel = "변경 불가";
     }
 
@@ -26,18 +24,21 @@ public class SummaryPanel : MonoBehaviour
              "비우면 이 오브젝트를 켜고 끈다.")]
     [SerializeField] private GameObject[] popupRoots;
 
-    [Tooltip("표의 칸들. 비워 두면 씬에 있는 옵션 그룹을 전부 한 줄로 보여 준다.")]
+    [Tooltip("표의 열들. 왼쪽부터 차례대로 넣는다. Saved Row Template의 Values 순서와 같아야 한다.")]
     [SerializeField] private Cell[] cells;
 
-    [Header("저장 목록")]
-    [Tooltip("저장된 조합 버튼이 쌓일 부모.")]
-    [SerializeField] private RectTransform presetListContent;
+    [Header("표")]
+    [Tooltip("모든 줄을 찍어 낼 틀. 첫 줄(현재)이 놓일 자리에 두고 꺼 둔다.")]
+    [SerializeField] private SummaryRow rowTemplate;
 
-    [Tooltip("조합 버튼으로 복제할 틀. 비우면 코드로 간단한 버튼을 만든다.")]
-    [SerializeField] private Button presetRowTemplate;
+    [Tooltip("줄 사이 세로 간격. 틀의 부모에 Layout Group이 붙어 있으면 그쪽 Spacing을 쓰고 이 값은 무시한다.")]
+    [SerializeField] private float rowSpacing = 50f;
+
+    [Tooltip("맨 윗줄 이름표.")]
+    [SerializeField] private string currentRowTitle = "현재";
 
     [Tooltip("최대 몇 개까지 저장할지. 넘으면 가장 오래된 것부터 지운다.")]
-    [SerializeField] private int maxPresets = 8;
+    [SerializeField] private int maxPresets = 3;
 
     [Header("버튼")]
     [Tooltip("Info 패널의 요약 보기 버튼. 꺼져 있는 오브젝트 안에 있어도 된다.")]
@@ -46,10 +47,10 @@ public class SummaryPanel : MonoBehaviour
     [Tooltip("돌아가기 버튼.")]
     [SerializeField] private Button closeButton;
 
-    [Tooltip("지금 조합을 목록에 추가하는 버튼.")]
+    [Tooltip("지금 조합을 표에 한 줄 추가하는 버튼.")]
     [SerializeField] private Button saveButton;
 
-    [Tooltip("옵션을 기본값으로 되돌리는 버튼.")]
+    [Tooltip("옵션을 되돌리고 저장 줄을 모두 지우는 버튼.")]
     [SerializeField] private Button resetButton;
 
     [Header("플레이어")]
@@ -60,7 +61,7 @@ public class SummaryPanel : MonoBehaviour
     [SerializeField] private CameraMovement playerController;
 
     private readonly List<OptionPreset> presets = new List<OptionPreset>();
-    private readonly List<GameObject> rows = new List<GameObject>();
+    private readonly List<SummaryRow> rows = new List<SummaryRow>();
 
     public bool IsOpen
     {
@@ -92,22 +93,25 @@ public class SummaryPanel : MonoBehaviour
         }
 
         // 틀은 복제용이라 화면에 보이면 안 된다.
-        if (presetRowTemplate != null)
+        if (rowTemplate != null)
         {
-            presetRowTemplate.gameObject.SetActive(false);
+            rowTemplate.gameObject.SetActive(false);
         }
 
         // 프리팹이 켜진 채로 저장돼 있으면 시작하자마자 요약이 떠 있다.
         // 여기서는 커서를 건드리면 안 된다. 시작 화면이 멈춰 둔 컨트롤러를 도로 켜 버린다.
         SetOpen(false, false);
 
-        // 칸을 안 채우면 프리팹에 적어 둔 예시 글자가 그대로 남아서, 선택이 반영 안 되는 것처럼 보인다.
         if (cells == null || cells.Length == 0)
         {
             Debug.LogWarning(
-                name + ": Cells가 비어 있어 요약 표를 채우지 못합니다. " +
-                "칸마다 텍스트와 옵션 그룹을 연결해 주세요.",
+                name + ": Cells가 비어 있어 요약 표를 채우지 못합니다. 열마다 옵션 그룹을 연결해 주세요.",
                 this);
+        }
+
+        if (rowTemplate == null)
+        {
+            Debug.LogWarning(name + ": Row Template이 비어 있어 표를 그리지 못합니다.", this);
         }
 
         Bind(openButton, Show);
@@ -165,7 +169,7 @@ public class SummaryPanel : MonoBehaviour
         }
     }
 
-    // 지금 조합을 목록에 추가한다.
+    // 지금 조합을 표에 한 줄 추가한다.
     public void SaveCurrent()
     {
         List<OptionGroup> groups = CollectGroups();
@@ -181,21 +185,15 @@ public class SummaryPanel : MonoBehaviour
             preset.Add(group, group.CurrentIndex);
         }
 
-        preset.Title = $"조합 {presets.Count + 1}";
         presets.Add(preset);
 
-        // 오래된 것부터 밀어낸다. 제목은 순서대로 다시 매긴다.
+        // 오래된 것부터 밀어낸다.
         while (presets.Count > Mathf.Max(1, maxPresets))
         {
             presets.RemoveAt(0);
         }
 
-        for (int i = 0; i < presets.Count; i++)
-        {
-            presets[i].Title = $"조합 {i + 1}";
-        }
-
-        RebuildRows();
+        Refresh();
     }
 
     // 저장된 조합을 통째로 적용한다.
@@ -213,10 +211,10 @@ public class SummaryPanel : MonoBehaviour
     public void ClearPresets()
     {
         presets.Clear();
-        RebuildRows();
+        Refresh();
     }
 
-    // 모든 옵션을 기본값으로 되돌린다. 초기화 버튼에 연결한다.
+    // 모든 옵션을 기본값으로 되돌리고 저장해 둔 조합도 지운다. 초기화 버튼에 연결한다.
     public void ResetOptions()
     {
         foreach (OptionGroup group in CollectGroups())
@@ -224,52 +222,142 @@ public class SummaryPanel : MonoBehaviour
             group.ResetToDefault();
         }
 
+        presets.Clear();
         Refresh();
     }
 
     public void Refresh()
     {
-        if (cells == null || cells.Length == 0)
+        foreach (SummaryRow row in rows)
+        {
+            if (row != null)
+            {
+                Destroy(row.gameObject);
+            }
+        }
+
+        rows.Clear();
+
+        if (rowTemplate == null)
         {
             return;
         }
 
-        foreach (Cell cell in cells)
+        RectTransform templateRect = rowTemplate.transform as RectTransform;
+        if (templateRect == null)
         {
-            if (cell == null || cell.text == null)
+            Debug.LogWarning(name + ": Row Template이 RectTransform이 아닙니다.", this);
+            return;
+        }
+
+        Transform parent = templateRect.parent;
+        Vector2 origin = templateRect.anchoredPosition;
+
+        // 부모가 Layout Group이면 줄 위치는 그쪽이 잡는다. 여기서 건드리면 서로 싸운다.
+        bool layoutDriven = parent != null && parent.GetComponent<LayoutGroup>() != null;
+
+        // 0번은 현재 줄, 그 아래로 저장된 조합이 쌓인다.
+        for (int slot = 0; slot <= presets.Count; slot++)
+        {
+            OptionPreset preset = slot == 0 ? null : presets[slot - 1];
+            string title = slot == 0 ? currentRowTitle : $"저장 {slot}";
+
+            SummaryRow row = Instantiate(rowTemplate, parent);
+            row.gameObject.SetActive(true);
+
+            if (!layoutDriven)
             {
-                continue;
+                RectTransform rect = row.transform as RectTransform;
+                rect.anchoredPosition = new Vector2(origin.x, origin.y - rowSpacing * slot);
             }
 
-            cell.text.text = BuildCellText(cell);
+            row.Set(title, BuildTexts(preset));
+            BindRow(row, slot);
+
+            rows.Add(row);
         }
     }
 
-    private static string BuildCellText(Cell cell)
+    private void BindRow(SummaryRow row, int slot)
     {
-        if (cell.groups == null || cell.groups.Length == 0)
+        if (row.Button == null)
         {
-            return cell.emptyLabel;
+            return;
         }
 
-        StringBuilder builder = new StringBuilder();
-
-        foreach (OptionGroup group in cell.groups)
+        // 틀 바깥의 버튼을 꽂아 두면 복제해도 그 버튼 하나를 모든 줄이 공유한다.
+        // 그대로 두면 아래에서 그 버튼의 기존 연결까지 지워 버리니 건드리지 않는다.
+        if (!row.Button.transform.IsChildOf(row.transform))
         {
-            if (group == null)
-            {
-                continue;
-            }
-
-            if (builder.Length > 0)
-            {
-                builder.Append(", ");
-            }
-
-            builder.Append(group.CurrentLabel);
+            Debug.LogWarning(
+                name + ": Row Template의 Button 칸에 줄 바깥 버튼(" + row.Button.name + ")이 들어 있습니다. " +
+                "줄 자신에 붙인 Button을 넣어 주세요.",
+                this);
+            return;
         }
 
-        return builder.Length > 0 ? builder.ToString() : cell.emptyLabel;
+        row.Button.onClick.RemoveAllListeners();
+
+        // 현재 줄은 되돌릴 대상이 아니다.
+        if (slot == 0)
+        {
+            row.Button.interactable = false;
+            return;
+        }
+
+        int index = slot - 1;
+        row.Button.onClick.AddListener(() => ApplyPreset(index));
+    }
+
+    // preset이 null이면 지금 고른 옵션을 글자로 만든다.
+    private string[] BuildTexts(OptionPreset preset)
+    {
+        if (cells == null)
+        {
+            return new string[0];
+        }
+
+        string[] texts = new string[cells.Length];
+
+        for (int i = 0; i < cells.Length; i++)
+        {
+            Cell cell = cells[i];
+            StringBuilder builder = new StringBuilder();
+
+            if (cell != null && cell.groups != null)
+            {
+                foreach (OptionGroup group in cell.groups)
+                {
+                    if (group == null)
+                    {
+                        continue;
+                    }
+
+                    if (preset == null)
+                    {
+                        Append(builder, group.CurrentLabel);
+                    }
+                    else if (preset.TryGetIndex(group, out int index))
+                    {
+                        Append(builder, group.GetLabel(index));
+                    }
+                }
+            }
+
+            texts[i] = builder.Length > 0 ? builder.ToString() : (cell != null ? cell.emptyLabel : string.Empty);
+        }
+
+        return texts;
+    }
+
+    private static void Append(StringBuilder builder, string value)
+    {
+        if (builder.Length > 0)
+        {
+            builder.Append(", ");
+        }
+
+        builder.Append(value);
     }
 
     private void SetOpen(bool open, bool affectPlayer = true)
@@ -291,7 +379,7 @@ public class SummaryPanel : MonoBehaviour
         playerController.enabled = !open;
     }
 
-    // 칸에 걸어 둔 그룹들을 중복 없이 모은다. 칸이 비어 있으면 씬 전체에서 찾는다.
+    // 열에 걸어 둔 그룹들을 중복 없이 모은다. 열이 비어 있으면 씬 전체에서 찾는다.
     private List<OptionGroup> CollectGroups()
     {
         List<OptionGroup> groups = new List<OptionGroup>();
@@ -321,83 +409,5 @@ public class SummaryPanel : MonoBehaviour
         }
 
         return groups;
-    }
-
-    private void RebuildRows()
-    {
-        foreach (GameObject row in rows)
-        {
-            if (row != null)
-            {
-                Destroy(row);
-            }
-        }
-
-        rows.Clear();
-
-        if (presetListContent == null)
-        {
-            Debug.LogWarning(name + ": Preset List Content 가 비어 있어 저장 목록을 그리지 못합니다.", this);
-            return;
-        }
-
-        for (int i = 0; i < presets.Count; i++)
-        {
-            int captured = i;
-            Button row = CreateRow();
-            if (row == null)
-            {
-                return;
-            }
-
-            SetRowLabel(row, $"{presets[i].Title}  ·  {presets[i].Describe()}");
-            row.onClick.AddListener(() => ApplyPreset(captured));
-            rows.Add(row.gameObject);
-        }
-    }
-
-    private Button CreateRow()
-    {
-        if (presetRowTemplate != null)
-        {
-            Button row = Instantiate(presetRowTemplate, presetListContent);
-            row.gameObject.SetActive(true);
-            row.onClick.RemoveAllListeners();
-            return row;
-        }
-
-        // 틀을 안 넣었으면 최소한의 버튼을 만들어 둔다. 모양은 나중에 틀로 바꾸면 된다.
-        GameObject go = new GameObject("PresetRow", typeof(RectTransform), typeof(Image), typeof(Button));
-        RectTransform rect = go.GetComponent<RectTransform>();
-        rect.SetParent(presetListContent, false);
-        rect.sizeDelta = new Vector2(0f, 44f);
-
-        Image background = go.GetComponent<Image>();
-        background.color = new Color(1f, 1f, 1f, 0.12f);
-
-        GameObject labelObject = new GameObject("Label", typeof(RectTransform), typeof(TextMeshProUGUI));
-        RectTransform labelRect = labelObject.GetComponent<RectTransform>();
-        labelRect.SetParent(rect, false);
-        labelRect.anchorMin = Vector2.zero;
-        labelRect.anchorMax = Vector2.one;
-        labelRect.offsetMin = new Vector2(12f, 0f);
-        labelRect.offsetMax = new Vector2(-12f, 0f);
-
-        TextMeshProUGUI label = labelObject.GetComponent<TextMeshProUGUI>();
-        label.fontSize = 22f;
-        label.color = Color.white;
-        label.alignment = TextAlignmentOptions.MidlineLeft;
-        label.raycastTarget = false;
-
-        return go.GetComponent<Button>();
-    }
-
-    private static void SetRowLabel(Button row, string value)
-    {
-        TMP_Text label = row.GetComponentInChildren<TMP_Text>(true);
-        if (label != null)
-        {
-            label.text = value;
-        }
     }
 }

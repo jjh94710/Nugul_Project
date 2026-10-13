@@ -33,6 +33,22 @@ public class OptionPreset
         picks.Add(new Pick(group, index));
     }
 
+    // 이 조합에서 그 그룹이 몇 번이었는지. 열별로 글자를 만들 때 쓴다.
+    public bool TryGetIndex(OptionGroup group, out int index)
+    {
+        foreach (Pick pick in picks)
+        {
+            if (pick.Group == group)
+            {
+                index = pick.Index;
+                return true;
+            }
+        }
+
+        index = -1;
+        return false;
+    }
+
     // 저장해 둔 번호를 그룹마다 그대로 다시 먹인다.
     public void Apply()
     {
